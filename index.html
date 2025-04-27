@@ -29,11 +29,11 @@
     <script>
         const members = [
             "生田衣梨奈", "小田さくら", "野中美希", "牧野真莉愛", "羽賀朱音", "横山玲奈", "北川莉央", "岡村ほまれ", "山﨑愛生", "櫻井梨央", "井上春華", "弓桁朱琴",
-            "上國料萌衣", "伊勢鈴蘭", "川名凜", "為永幸音", "松本わかな", "平山遊季", "後藤花", "下井谷幸穂", "橋迫鈴", "谷本安美", "小野瑞歩", "小野田紗栞",
-            "秋山眞緒", "河西結心", "八木栞", "福田真琳", "豫風瑠乃", "石井泉羽", "村田結生", "土居楓奏", "段原瑠々", "井上玲音", "工藤由愛", "松永里愛",
-            "有澤一華", "入江里咲", "江端妃咲", "石山咲良", "遠藤彩加里", "川嶋美楓", "斉藤円香", "広本瑠璃", "米村姫良々", "窪田七海", "中山夏月姫",
-            "西﨑美空", "北原もも", "筒井澪心", "島倉りか", "西田汐里", "江口紗耶", "高瀬くるみ", "清野桃々姫", "小林萌花", "里吉うたの", "前田こころ",
-            "平井美葉", "岡村美波", "橋田歩果", "吉田姫杷", "小野田華凜", "村越彩菜", "植村葉純", "松原ユリヤ", "島川波菜", "上村麗菜", "相馬優芽"
+            "上國料萌衣", "伊勢鈴蘭", "橋迫鈴", "川名凜", "為永幸音", "松本わかな", "平山遊季", "下井谷幸穂", "後藤花", "段原瑠々", "井上玲音", "工藤由愛",
+            "松永里愛", "有澤一華", "入江里咲", "江端妃咲", "石山咲良", "遠藤彩加里", "川嶋美楓", "谷本安美", "小野瑞歩", "小野田紗栞", "秋山眞緒", "河西結心",
+            "八木栞", "福田真琳", "豫風瑠乃", "石井泉羽", "村田結生", "土居楓奏", "島倉りか", "西田汐里", "江口紗耶", "高瀬くるみ", "前田こころ", "岡村美波",
+            "清野桃々姫", "平井美葉", "里吉うたの", "小林萌花", "斉藤円香", "広本瑠璃", "米村姫良々", "窪田七海", "中山夏月姫", "西﨑美空", "北原もも", "筒井澪心",
+            "橋田歩果", "吉田姫杷", "小野田華凜", "村越彩菜", "植村葉純", "松原ユリヤ", "島川波菜", "上村麗菜", "相馬優芽"
         ];
 
         const rarities = [
@@ -56,6 +56,7 @@
             let results = [];
             let count = 0;
             let srHit = false;
+            let srCount = 0, rCount = 0, nCount = 0;
             do {
                 const member = members[Math.floor(Math.random() * members.length)];
                 const rarity = getRandomRarity();
@@ -64,9 +65,15 @@
                 if (rarity === "N") {
                     item = Math.random() < 0.5 ? "缶バッジ" : "ステッカー";
                     rarityTag = item;
-                } else if (rarity === "R") item = "キーホルダー";
-                else if (rarity === "SR") item = "BIGアクリルスタンド";
-                results.push({ rarity: rarityTag, display: rarity === "SR" ? `<span class='rainbow-text'>${rarity}：${member} - ${item}</span>` : `${rarity}：${member} - ${item}` });
+                    nCount++;
+                } else if (rarity === "R") {
+                    item = "キーホルダー";
+                    rCount++;
+                } else if (rarity === "SR") {
+                    item = "BIGアクリルスタンド";
+                    srCount++;
+                }
+                results.push({ rarity: rarityTag, member: member, display: rarity === "SR" ? `<span class='rainbow-text'>${rarity}：${member} - ${item}</span>` : `${rarity}：${member} - ${item}` });
                 if (rarity === "SR") srHit = true;
                 count++;
                 if (untilSR && srHit) break;
@@ -74,10 +81,15 @@
 
             results.sort((a, b) => {
                 const order = { "SR": 0, "R": 1, "缶バッジ": 2, "ステッカー": 3 };
-                return (order[a.rarity] ?? 99) - (order[b.rarity] ?? 99);
+                if ((order[a.rarity] ?? 99) !== (order[b.rarity] ?? 99)) {
+                    return (order[a.rarity] ?? 99) - (order[b.rarity] ?? 99);
+                } else {
+                    return members.indexOf(a.member) - members.indexOf(b.member);
+                }
             });
 
-            let displayText = results.map(r => r.display).join("<br>");
+            let summary = `SR: ${srCount}個 / R: ${rCount}個 / N: ${nCount}個\n\n`;
+            let displayText = summary + results.map(r => r.display).join("<br>");
             if (untilSR && srHit) {
                 const totalCost = count * 500;
                 displayText = `🎉✨🎊 ${count}回でSRが出ました！（合計 ${totalCost.toLocaleString()}円）🎊✨🎉<br><br>` + displayText;
