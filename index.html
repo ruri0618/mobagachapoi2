@@ -19,8 +19,22 @@
             font-size: 24px;
             font-weight: bold;
             color: white;
+            text-align: center;
             text-shadow: 2px 2px 4px #000;
             pointer-events: none;
+            white-space: pre-line;
+        }
+        .rainbow-text {
+            background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: rainbow 3s infinite;
+        }
+        .gold-text {
+            color: gold;
+        }
+        .white-text {
+            color: white;
         }
         video {
             width: 90%;
@@ -77,7 +91,11 @@
                 item = "BIGアクリルスタンド";
             }
 
-            const displayText = `${rarity}：${member} - ${item}`;
+            let colorClass = "white-text";
+            if (rarity === "SR") colorClass = "rainbow-text";
+            else if (rarity === "R") colorClass = "gold-text";
+
+            const displayText = `<div class="${colorClass}">${member}\n${rarity}-${item}</div>`;
 
             videoElement.src = "scene_2.mp4";
             videoElement.loop = false;
