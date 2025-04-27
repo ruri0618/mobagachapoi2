@@ -4,27 +4,37 @@
     <meta charset="UTF-8">
     <title>ハロプロ モバガチャ2025</title>
     <style>
-        .rainbow-text {
-            background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
-            -webkit-background-clip: text;
-            color: transparent;
-            animation: rainbow 3s infinite;
-            font-weight: bold;
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+            background-color: #000;
+            color: #fff;
         }
-
-        @keyframes rainbow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
+        .overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px #000;
+            pointer-events: none;
+        }
+        video {
+            width: 90%;
+            max-width: 600px;
+            cursor: pointer;
         }
     </style>
 </head>
-<body style="font-family: Arial, sans-serif; text-align: center; padding: 30px;">
+<body>
     <h1>✨ハロプロモバガチャ 2025 ミニアプリ✨</h1>
-    <button id="gachaButton" style="font-size: 24px; padding: 10px 20px;">ガチャを回す✨</button>
-    <button id="gacha10Button" style="font-size: 20px; padding: 8px 16px; margin-top: 10px;">10連ガチャ✨</button>
-    <button id="gacha100Button" style="font-size: 20px; padding: 8px 16px; margin-top: 10px;">100連ガチャ✨</button>
-    <button id="gachaUntilSRButton" style="font-size: 20px; padding: 8px 16px; margin-top: 10px;">SRが出るまでガチャ✨</button>
-    <h2 id="result" style="margin-top: 30px; white-space: pre-line;">ここに結果が表示されます</h2>
+    <div style="position: relative; display: inline-block;">
+        <video id="gachaVideo" src="scene_1.mp4" autoplay loop muted playsinline></video>
+        <div id="overlay" class="overlay"></div>
+    </div>
 
     <script>
         const members = [
@@ -42,6 +52,9 @@
             { type: "SR", rate: 5 }
         ];
 
+        const videoElement = document.getElementById("gachaVideo");
+        const overlayElement = document.getElementById("overlay");
+
         function getRandomRarity() {
             let rand = Math.random() * 100;
             let sum = 0;
@@ -52,66 +65,42 @@
             return rarities[rarities.length - 1].type;
         }
 
-        function drawGacha(times, untilSR = false) {
-            let results = [];
-            let count = 0;
-            let srHit = false;
-            let srCount = 0, rCount = 0, nCount = 0;
-            do {
-                const member = members[Math.floor(Math.random() * members.length)];
-                const rarity = getRandomRarity();
-                let item = "";
-                let rarityTag = rarity;
-                if (rarity === "N") {
-                    item = Math.random() < 0.5 ? "缶バッジ" : "ステッカー";
-                    rarityTag = item;
-                    nCount++;
-                } else if (rarity === "R") {
-                    item = "キーホルダー";
-                    rCount++;
-                } else if (rarity === "SR") {
-                    item = "BIGアクリルスタンド";
-                    srCount++;
-                }
-                results.push({ rarity: rarityTag, member: member, display: rarity === "SR" ? `<span class='rainbow-text'>${rarity}：${member} - ${item}</span>` : `${rarity}：${member} - ${item}` });
-                if (rarity === "SR") srHit = true;
-                count++;
-                if (untilSR && srHit) break;
-            } while (count < times || untilSR);
-
-            results.sort((a, b) => {
-                const order = { "SR": 0, "R": 1, "缶バッジ": 2, "ステッカー": 3 };
-                if ((order[a.rarity] ?? 99) !== (order[b.rarity] ?? 99)) {
-                    return (order[a.rarity] ?? 99) - (order[b.rarity] ?? 99);
-                } else {
-                    return members.indexOf(a.member) - members.indexOf(b.member);
-                }
-            });
-
-            let summary = `SR: ${srCount}個 / R: ${rCount}個 / N: ${nCount}個\n\n`;
-            let displayText = summary + results.map(r => r.display).join("<br>");
-            if (untilSR && srHit) {
-                const totalCost = count * 500;
-                displayText = `🎉✨🎊 ${count}回でSRが出ました！（合計 ${totalCost.toLocaleString()}円）🎊✨🎉<br><br>` + displayText;
+        function drawGacha() {
+            const member = members[Math.floor(Math.random() * members.length)];
+            const rarity = getRandomRarity();
+            let item = "";
+            if (rarity === "N") {
+                item = Math.random() < 0.5 ? "缶バッジ" : "ステッカー";
+            } else if (rarity === "R") {
+                item = "キーホルダー";
+            } else if (rarity === "SR") {
+                item = "BIGアクリルスタンド";
             }
 
-            document.getElementById("result").innerHTML = displayText;
+            const displayText = `${rarity}：${member} - ${item}`;
+
+            videoElement.src = "scene_2.mp4";
+            videoElement.loop = false;
+            overlayElement.innerHTML = "";
+
+            videoElement.onended = () => {
+                if (rarity === "SR") {
+                    videoElement.src = "scene_3_rarity_A.mp4";
+                } else if (rarity === "R") {
+                    videoElement.src = "scene_3_rarity_B.mp4";
+                } else {
+                    videoElement.src = "scene_3_rarity_C.mp4";
+                }
+                videoElement.loop = true;
+                videoElement.play();
+                overlayElement.innerHTML = displayText;
+            };
+
+            videoElement.play();
         }
 
-        document.getElementById("gachaButton").addEventListener("click", () => {
-            drawGacha(1);
-        });
-
-        document.getElementById("gacha10Button").addEventListener("click", () => {
-            drawGacha(10);
-        });
-
-        document.getElementById("gacha100Button").addEventListener("click", () => {
-            drawGacha(100);
-        });
-
-        document.getElementById("gachaUntilSRButton").addEventListener("click", () => {
-            drawGacha(1, true);
+        videoElement.addEventListener("click", () => {
+            drawGacha();
         });
     </script>
 </body>
