@@ -111,7 +111,9 @@
                 }
                 videoElement.loop = true;
                 videoElement.play();
-                overlayElement.innerHTML = displayText;
+                setTimeout(() => {
+                    overlayElement.innerHTML = displayText;
+                }, 1000); // 1秒後に表示
             };
 
             videoElement.play();
