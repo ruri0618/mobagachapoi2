@@ -3,6 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>ハロプロ モバガチャ2025</title>
+    <style>
+        .rainbow-text {
+            background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: rainbow 3s infinite;
+            font-weight: bold;
+        }
+
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+    </style>
 </head>
 <body style="font-family: Arial, sans-serif; text-align: center; padding: 30px;">
     <h1>✨ハロプロモバガチャ 2025 ミニアプリ✨</h1>
@@ -52,7 +66,7 @@
                     rarityTag = item;
                 } else if (rarity === "R") item = "キーホルダー";
                 else if (rarity === "SR") item = "BIGアクリルスタンド";
-                results.push({ rarity: rarityTag, display: `${rarity}：${member} - ${item}` });
+                results.push({ rarity: rarityTag, display: rarity === "SR" ? `<span class='rainbow-text'>${rarity}：${member} - ${item}</span>` : `${rarity}：${member} - ${item}` });
                 if (rarity === "SR") srHit = true;
                 count++;
                 if (untilSR && srHit) break;
@@ -63,13 +77,13 @@
                 return (order[a.rarity] ?? 99) - (order[b.rarity] ?? 99);
             });
 
-            let displayText = results.map(r => r.display).join("\n");
+            let displayText = results.map(r => r.display).join("<br>");
             if (untilSR && srHit) {
                 const totalCost = count * 500;
-                displayText = `🎉✨🎊 ${count}回でSRが出ました！（合計 ${totalCost.toLocaleString()}円）🎊✨🎉\n\n` + displayText;
+                displayText = `🎉✨🎊 ${count}回でSRが出ました！（合計 ${totalCost.toLocaleString()}円）🎊✨🎉<br><br>` + displayText;
             }
 
-            document.getElementById("result").innerText = displayText;
+            document.getElementById("result").innerHTML = displayText;
         }
 
         document.getElementById("gachaButton").addEventListener("click", () => {
