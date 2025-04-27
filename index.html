@@ -34,10 +34,9 @@
             max-width: 900px;
             cursor: pointer;
         }
-        #history {
+        #counter {
             margin-top: 20px;
             text-align: center;
-            white-space: normal;
             background: rgba(255, 255, 255, 0.1);
             padding: 10px;
             border-radius: 10px;
@@ -51,12 +50,6 @@
             font-size: 16px;
             cursor: pointer;
         }
-        .history-item {
-            margin: 5px 0;
-            padding: 5px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body>
@@ -65,7 +58,7 @@
         <video id="gachaVideo" src="scene_1.mp4" autoplay loop muted playsinline></video>
         <div id="overlay" class="overlay"></div>
     </div>
-    <div id="history"></div>
+    <div id="counter"></div>
     <button id="resetButton">リセット</button>
 
     <script>
@@ -86,10 +79,14 @@
 
         const videoElement = document.getElementById("gachaVideo");
         const overlayElement = document.getElementById("overlay");
-        const historyElement = document.getElementById("history");
+        const counterElement = document.getElementById("counter");
         const resetButton = document.getElementById("resetButton");
 
-        let history = [];
+        let counts = { SR: 0, R: 0, N: 0 };
+
+        function updateCounter() {
+            counterElement.innerHTML = `SR: ${counts.SR}個 / R: ${counts.R}個 / N: ${counts.N}個`;
+        }
 
         function getRandomRarity() {
             let rand = Math.random() * 100;
@@ -113,7 +110,6 @@
                 item = "BIGアクリルスタンド";
             }
 
-            const resultText = `${member} ${rarity}-${item}`;
             const displayText = `<div class="white-text">${member}\n${rarity}-${item}</div>`;
 
             videoElement.src = "scene_2.mp4";
@@ -134,8 +130,8 @@
                 setTimeout(() => {
                     overlayElement.innerHTML = displayText;
                     overlayElement.style.opacity = 1;
-                    history.push(resultText);
-                    historyElement.innerHTML = history.map(item => `<div class="history-item">${item}</div>`).join("");
+                    counts[rarity]++;
+                    updateCounter();
                 }, 200);
             };
 
@@ -147,9 +143,11 @@
         });
 
         resetButton.addEventListener("click", () => {
-            history = [];
-            historyElement.innerHTML = "";
+            counts = { SR: 0, R: 0, N: 0 };
+            updateCounter();
         });
+
+        updateCounter();
     </script>
 </body>
 </html>
