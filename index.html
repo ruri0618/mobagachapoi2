@@ -26,15 +26,6 @@
             opacity: 0;
             transition: opacity 1s;
         }
-        .rainbow-text {
-            background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
-            -webkit-background-clip: text;
-            color: transparent;
-            animation: rainbow 3s infinite;
-        }
-        .gold-text {
-            color: gold;
-        }
         .white-text {
             color: white;
         }
@@ -42,6 +33,29 @@
             width: 135%;
             max-width: 900px;
             cursor: pointer;
+        }
+        #history {
+            margin-top: 20px;
+            text-align: center;
+            white-space: pre-line;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #resetButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .history-item {
+            margin: 5px 0;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -51,6 +65,8 @@
         <video id="gachaVideo" src="scene_1.mp4" autoplay loop muted playsinline></video>
         <div id="overlay" class="overlay"></div>
     </div>
+    <div id="history"></div>
+    <button id="resetButton">リセット</button>
 
     <script>
         const members = [
@@ -70,6 +86,10 @@
 
         const videoElement = document.getElementById("gachaVideo");
         const overlayElement = document.getElementById("overlay");
+        const historyElement = document.getElementById("history");
+        const resetButton = document.getElementById("resetButton");
+
+        let history = [];
 
         function getRandomRarity() {
             let rand = Math.random() * 100;
@@ -93,11 +113,8 @@
                 item = "BIGアクリルスタンド";
             }
 
-            let colorClass = "white-text";
-            if (rarity === "SR") colorClass = "rainbow-text";
-            else if (rarity === "R") colorClass = "gold-text";
-
-            const displayText = `<div class="${colorClass}">${member}\n${rarity}-${item}</div>`;
+            const resultText = `${member}\n${rarity}-${item}`;
+            const displayText = `<div class="white-text">${resultText}</div>`;
 
             videoElement.src = "scene_2.mp4";
             videoElement.loop = false;
@@ -117,7 +134,9 @@
                 setTimeout(() => {
                     overlayElement.innerHTML = displayText;
                     overlayElement.style.opacity = 1;
-                }, 500);
+                    history.push(resultText);
+                    historyElement.innerHTML = history.map(item => `<div class="history-item">${item}</div>`).join("");
+                }, 200);
             };
 
             videoElement.play();
@@ -125,6 +144,11 @@
 
         videoElement.addEventListener("click", () => {
             drawGacha();
+        });
+
+        resetButton.addEventListener("click", () => {
+            history = [];
+            historyElement.innerHTML = "";
         });
     </script>
 </body>
