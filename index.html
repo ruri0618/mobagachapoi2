@@ -23,6 +23,8 @@
             text-shadow: 2px 2px 4px #000;
             pointer-events: none;
             white-space: pre-line;
+            opacity: 0;
+            transition: opacity 1s;
         }
         .rainbow-text {
             background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
@@ -37,8 +39,8 @@
             color: white;
         }
         video {
-            width: 90%;
-            max-width: 600px;
+            width: 135%;
+            max-width: 900px;
             cursor: pointer;
         }
     </style>
@@ -99,6 +101,7 @@
 
             videoElement.src = "scene_2.mp4";
             videoElement.loop = false;
+            overlayElement.style.opacity = 0;
             overlayElement.innerHTML = "";
 
             videoElement.onended = () => {
@@ -113,7 +116,8 @@
                 videoElement.play();
                 setTimeout(() => {
                     overlayElement.innerHTML = displayText;
-                }, 1000); // 1秒後に表示
+                    overlayElement.style.opacity = 1;
+                }, 500);
             };
 
             videoElement.play();
