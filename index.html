@@ -4,57 +4,14 @@
     <meta charset="UTF-8">
     <title>ハロプロ モバガチャ2025</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 30px;
-            background-color: #000;
-            color: #fff;
-        }
-        .overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 30px;
-            font-weight: bold;
-            color: white;
-            text-align: center;
-            text-shadow: 2px 2px 4px #000;
-            pointer-events: none;
-            white-space: pre-line;
-            opacity: 0;
-            transition: opacity 1s;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 30px; background-color: #000; color: #fff; }
+        .overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 30px; font-weight: bold; color: white; text-align: center; text-shadow: 2px 2px 4px #000; pointer-events: none; white-space: pre-line; opacity: 0; transition: opacity 1s; }
         .white-text { color: white; }
         .gold-text { color: gold; }
-        .rainbow-text {
-            background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
-            -webkit-background-clip: text;
-            color: transparent;
-            animation: rainbow 3s infinite;
-        }
-        video {
-            width: 135%;
-            max-width: 900px;
-            cursor: pointer;
-        }
-        #counter, #history {
-            margin-top: 20px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 10px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        #resetButton, #showHistoryButton {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+        .rainbow-text { background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet); -webkit-background-clip: text; color: transparent; animation: rainbow 3s infinite; }
+        video { width: 135%; max-width: 900px; cursor: pointer; }
+        #counter, #history { margin-top: 20px; text-align: center; background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 10px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        #resetButton, #showHistoryButton { margin-top: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
         #history { display: none; }
     </style>
 </head>
@@ -137,11 +94,15 @@
         });
 
         showHistoryButton.addEventListener("click", () => {
-            historyElement.style.display = "block";
-            historyElement.innerHTML = history.map(h => {
-                let colorClass = h.rarity === "SR" ? "rainbow-text" : h.rarity === "R" ? "gold-text" : "white-text";
-                return `<div class="${colorClass}">${h.member}: ${h.rarity}-${h.item}</div>`;
-            }).join("");
+            if (historyElement.style.display === "none" || historyElement.style.display === "") {
+                historyElement.style.display = "block";
+                historyElement.innerHTML = history.map(h => {
+                    let colorClass = h.rarity === "SR" ? "rainbow-text" : h.rarity === "R" ? "gold-text" : "white-text";
+                    return `<div class="${colorClass}">${h.member}: ${h.rarity}-${h.item}</div>`;
+                }).join("");
+            } else {
+                historyElement.style.display = "none";
+            }
         });
 
         resetButton.addEventListener("click", () => {
