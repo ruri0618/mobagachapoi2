@@ -16,7 +16,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 24px;
+            font-size: 30px;
             font-weight: bold;
             color: white;
             text-align: center;
@@ -37,7 +37,7 @@
         #history {
             margin-top: 20px;
             text-align: center;
-            white-space: pre-line;
+            white-space: normal;
             background: rgba(255, 255, 255, 0.1);
             padding: 10px;
             border-radius: 10px;
@@ -113,8 +113,8 @@
                 item = "BIGアクリルスタンド";
             }
 
-            const resultText = `${member}\n${rarity}-${item}`;
-            const displayText = `<div class="white-text">${resultText}</div>`;
+            const resultText = `${member} ${rarity}-${item}`;
+            const displayText = `<div class="white-text">${member}\n${rarity}-${item}</div>`;
 
             videoElement.src = "scene_2.mp4";
             videoElement.loop = false;
